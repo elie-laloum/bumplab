@@ -7,6 +7,14 @@
 
 Node.js 22+ · npm · Git · [Quick start](#quick-start) · [How it works](#how-it-works) · [Boundaries](#boundaries)
 
+## See it in action
+
+<a href="assets/demo.mp4"><img src="assets/demo.gif" alt="BumpLab — recorded demonstration" width="100%"></a>
+
+<sub>Replay of a real demo run, with explanatory annotations and timing edited for readability. Deterministic adapter; Git and the checks execute for real.</sub>
+
+[Watch the MP4](assets/demo.mp4) · [Reproduce this demo](docs/demo.md)
+
 ## Why it exists
 
 ### Start from green

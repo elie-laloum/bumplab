@@ -1,0 +1,83 @@
+{
+  "recordedAt": "2026-09-21T12:49:11.601Z",
+  "source": "Runnable repository demo; presentation timing edited",
+  "observed": {
+    "status": "verified",
+    "checks": [
+      {
+        "label": "setup",
+        "code": 0
+      },
+      {
+        "label": "baseline",
+        "code": 0
+      },
+      {
+        "label": "dependency update",
+        "code": 0
+      },
+      {
+        "label": "after upgrade",
+        "code": 1
+      },
+      {
+        "label": "verification 1",
+        "code": 0
+      }
+    ],
+    "changedFiles": [
+      "package-lock.json",
+      "package.json",
+      "src/greeting.js"
+    ],
+    "patchSha256": "3777657918911eef27914889d8514775137e8f540ea38c3ba88fd6903c0ff3c9",
+    "attempts": 1,
+    "adapter": "deterministic fixture"
+  },
+  "scenes": [
+    {
+      "title": "A real dependency upgrade",
+      "lines": [
+        "$ npm run demo",
+        "",
+        "Local npm fixture registry",
+        "bumplab-fixture-name   1.0.0  ->  2.0.0",
+        "",
+        "Baseline: exit 0",
+        "Dependency install: exit 0",
+        "After upgrade: exit 1",
+        "The removed API breaks the original test."
+      ],
+      "tone": "fail"
+    },
+    {
+      "title": "Adapt to the new API",
+      "lines": [
+        "src/greeting.js",
+        "",
+        "import { displayName } from 'bumplab-fixture-name';",
+        "export const greeting = value => 'Hello '+displayName(value);",
+        "",
+        "Target stays pinned to 2.0.0.",
+        "The adapter cannot edit the manifest or lockfile."
+      ],
+      "tone": "normal"
+    },
+    {
+      "title": "A reviewable migration",
+      "lines": [
+        "Verification: exit 0",
+        "Status: VERIFIED",
+        "Attempts: 1",
+        "",
+        "Changed files:",
+        "  package-lock.json",
+        "  package.json",
+        "  src/greeting.js",
+        "",
+        "Test source preserved. Patch exported."
+      ],
+      "tone": "success"
+    }
+  ]
+}
