@@ -1,54 +1,114 @@
-<p align="center"><strong>English</strong> · <a href="README.fr.md">Français</a></p>
+<p align="right"><a href="README.fr.md">Français</a></p>
+<img src="assets/hero.svg" alt="BumpLab — Upgrade the dependency. Carry the code with it." width="100%">
 
-<p align="center"><img src="assets/hero.svg" alt="BumpLab — Upgrade the dependency. Adapt the code." width="100%"></p>
+[![CI](https://github.com/elie-laloum/bumplab/actions/workflows/ci.yml/badge.svg)](https://github.com/elie-laloum/bumplab/actions/workflows/ci.yml) ![Version](https://img.shields.io/badge/version-0.1.0-242b3a) [![License: MIT](https://img.shields.io/badge/license-MIT-242b3a)](LICENSE)
 
-# BumpLab
+**Move one direct npm dependency to an exact version, adapt the affected source, and review the migration as a tested patch.**
 
-**Upgrade the dependency. Adapt the code. Show the evidence.**
+Node.js 22+ · npm · Git · [Quick start](#quick-start) · [How it works](#how-it-works) · [Boundaries](#boundaries)
 
-An open-source agent workflow designed to carry a targeted dependency upgrade through the application changes and checks it requires.
+## Why it exists
 
-> **In development.** This repository contains the initial specification and documentation. No executable release has shipped yet.
+### Start from green
+The baseline must pass before the requested package is installed. You supply an exact version and reviewed migration notes.
 
+### Keep the upgrade intact
+The installed version, package manifest and lockfile are checked. The adapter cannot undo the upgrade to make tests pass.
 
-**Original repository: [GitLab](https://gitlab.elielaloum.com/elielaloum/bumplab)** · [Public GitHub mirror](https://github.com/elie-laloum/bumplab). The GitLab origin is private and requires access. Code changes are integrated in GitLab and synchronized to GitHub.
+### Review one migration
+The result combines the dependency change, focused source edits and command evidence in a retained worktree.
 
+## Quick start
 
-## A version bump is the beginning
-
-A new dependency version can change APIs, types, and configuration. BumpLab is designed for the work between selecting that version and having an application you can review and test.
-
-```text
-Target version → Migration sources → Dependency update → Code adaptation → Checks
+```sh
+git clone https://github.com/elie-laloum/bumplab.git
+cd bumplab
+npm test
+npm run demo
 ```
 
-## A deliberately focused first release
+Clone and run from source; these commands do not assume a package has been published to a registry.
 
-- TypeScript applications using npm.
-- One direct dependency and an explicit target version per run.
-- A baseline check before modifications.
-- Migration decisions linked to their source documentation.
-- Manifest, lockfile, application patch, and a report of passed and failed checks.
+## How it works
 
-The first version should use one documented model adapter, bounded attempts, and an isolated execution environment. Usage and model costs should remain visible.
+`Green baseline → exact upgrade → adapt → verify → review`
 
-## Where it fits
+The demo starts a local fixture registry, performs a real npm install from version 1 to 2, observes the removed API fail, and adapts the source from name() to displayName(). It requires npm and tar; no model key or public registry is needed.
 
-[Renovate](https://docs.renovatebot.com/) already automates dependency updates. BumpLab's proposed focus is a bounded migration of the consuming application with inspectable evidence. Its value must be demonstrated on concrete upgrades, not assumed from a feature checklist.
+## Use it on your project
 
-## The demo we will ship
+Create `workflow.json`, adapt the commands to your project, and use an absolute adapter path:
 
-A small TypeScript application, a selected dependency upgrade with a known API change, the resulting failure, and an agent-generated adaptation. Show the diff and the actual checks. Report blocked migrations as blocked.
+```json
+{
+  "scope": [
+    "src/"
+  ],
+  "setup": [
+    [
+      "npm",
+      "ci",
+      "--ignore-scripts"
+    ]
+  ],
+  "check": [
+    "npm",
+    "test"
+  ],
+  "update": [
+    "npm",
+    "install",
+    "--save-exact",
+    "--ignore-scripts",
+    "{package}@{version}"
+  ],
+  "verify": [],
+  "attempts": 3,
+  "timeoutMs": 120000,
+  "agent": [
+    "node",
+    "/absolute/path/to/bumplab/adapters/anthropic.js"
+  ]
+}
+```
 
-## Release requirements
+```sh
+export ANTHROPIC_API_KEY="your-key"
+export ANTHROPIC_MODEL="your-enabled-model-id"
+node bin/bumplab.js run --repo /path/to/app --config workflow.json --out /path/to/new-result --package example-package --version 2.0.0 --notes migration.md
+```
 
-The target version must remain installed. Existing tests and type checks cannot be weakened to make the upgrade pass. The original failure state, approved edit scope, attempts, and final result must be preserved.
+Run from this tool’s checkout. The target must be a clean Git repository; the output must be a new directory outside it. Omit checks your project does not provide. Set up dependencies explicitly. The adapter receives scoped source and failure logs; review that scope before using a hosted model.
 
-## Help shape it
+### Bring your own agent
 
-Useful early contributions: minimal migration fixtures, official migration references, and reproducible edge cases. Installation instructions and package coordinates will follow a verified release.
+An adapter is an executable argv array. It reads one JSON request from stdin and returns one JSON object on stdout:
 
+```json
+{"summary":"Explain the change","edits":[{"path":"src/file.js","content":"Complete replacement file contents"}]}
+```
 
----
+Requests include `protocolVersion`, `workflow`, `attempt`, scoped `files`, the last `failure`, migration context when present, and `previousAttempts`. No markdown fences. Diagnostics go to stderr. See [the adapter](adapters/anthropic.js) and [the reproducible demo](examples/demo.js).
 
-[Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md) · [MIT license](LICENSE)
+### Review the result
+
+- `report.json`: command arguments, exit codes, outputs, attempts and patch SHA-256.
+- `report.md`: concise run summary.
+- `change.patch`: exported only after all configured checks pass on the same tracked diff.
+- `worktree/`: retained for inspection; apply the patch to the recorded base after review.
+
+Commands and adapters execute with your local permissions; a Git worktree is isolation for changes, not a security sandbox. Log files may contain application data. There is no automatic push or merge.
+
+## Boundaries
+
+v0.1 supports one direct dependency in an npm project with a v2/v3 package-lock. Workspaces and other package managers are not supported. Migration notes are supplied by the developer. The deterministic demo validates the workflow; the included Anthropic adapter has contract tests, not a live-model benchmark.
+
+## Development
+
+Run `npm test` and `npm run demo`. Tests create real Git repositories and validate the exported changes as well as refusal paths.
+
+[Contributing](CONTRIBUTING.md) · [Roadmap](ROADMAP.md) · [MIT license](LICENSE)
+
+[GitLab origin](https://gitlab.elielaloum.com/elielaloum/bumplab) · [GitHub mirror](https://github.com/elie-laloum/bumplab)
+
+The private GitLab repository is the source of record. This public mirror receives synchronized changes; GitLab access is required to view the origin.

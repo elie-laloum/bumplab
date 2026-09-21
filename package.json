@@ -1,0 +1,14 @@
+{
+  "name": "@elie-laloum/bumplab",
+  "version": "0.1.0",
+  "description": "Migrate one npm dependency with bounded source edits and recorded checks",
+  "type": "module",
+  "license": "MIT",
+  "author": "Elie Laloum",
+  "engines": { "node": ">=22" },
+  "bin": { "bumplab": "bin/bumplab.js" },
+  "exports": "./src/engine.js",
+  "files": ["bin", "src", "adapters", "examples", "README.md", "README.fr.md", "LICENSE"],
+  "scripts": { "test": "node --test test/*.test.js", "demo": "node examples/demo.js" },
+  "repository": { "type": "git", "url": "https://gitlab.elielaloum.com/elielaloum/bumplab.git" }
+}
