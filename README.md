@@ -1,5 +1,5 @@
 <p align="right"><a href="README.fr.md">Français</a></p>
-<img src="assets/hero.svg" alt="BumpLab — Upgrade the dependency. Carry the code with it." width="100%">
+<img src="assets/cover.svg" alt="BumpLab — Upgrade the dependency. Carry the code with it." width="100%">
 
 [![CI](https://github.com/elie-laloum/bumplab/actions/workflows/ci.yml/badge.svg)](https://github.com/elie-laloum/bumplab/actions/workflows/ci.yml) ![Version](https://img.shields.io/badge/version-0.1.0-242b3a) [![License: MIT](https://img.shields.io/badge/license-MIT-242b3a)](LICENSE)
 
