@@ -1,23 +1,11 @@
 <p align="right"><a href="README.fr.md">Français</a></p>
-<img src="assets/cover.svg" alt="BumpLab — Upgrade the dependency. Carry the code with it." width="100%">
+<img src="assets/cover-v2.png" alt="BumpLab — Upgrade the dependency. Carry the code with it." width="100%">
 
-<!-- project badges -->
-<p>
-<a href="README.md"><img src="https://img.shields.io/badge/version-0.1.0-24334b?style=flat-square" alt="Version 0.1.0"></a>
-<a href="https://github.com/elie-laloum/bumplab/actions/workflows/ci.yml"><img src="https://github.com/elie-laloum/bumplab/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
-<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-e6b3ff?style=flat-square&amp;labelColor=172033" alt="MIT"></a>
-<a href="#see-it-in-action"><img src="https://img.shields.io/badge/demo-watch-e6b3ff?style=flat-square&amp;labelColor=172033" alt="Watch the demo"></a>
-</p>
-<p>
-<a href="#quick-start"><img src="https://img.shields.io/badge/-TypeScript-e6b3ff?style=flat-square&amp;labelColor=172033&amp;logo=typescript&amp;logoColor=white" alt="TypeScript"></a>
-<a href="#quick-start"><img src="https://img.shields.io/badge/-Node.js%2022%2B-e6b3ff?style=flat-square&amp;labelColor=172033&amp;logo=nodedotjs&amp;logoColor=white" alt="Node.js 22+"></a>
-<a href="#quick-start"><img src="https://img.shields.io/badge/-npm-e6b3ff?style=flat-square&amp;labelColor=172033&amp;logo=npm&amp;logoColor=white" alt="npm"></a>
-</p>
-<!-- /project badges -->
+[![CI](https://img.shields.io/github/actions/workflow/status/elie-laloum/bumplab/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/elie-laloum/bumplab/actions/workflows/ci.yml) [![License](https://img.shields.io/badge/license-MIT-586475?style=flat-square)](LICENSE)
 
 **Move one direct npm dependency to an exact version, adapt the affected source, and review the migration as a tested patch.**
 
-Node.js 22+ · npm · Git · [Quick start](#quick-start) · [How it works](#how-it-works) · [Boundaries](#boundaries)
+Node.js 24+ · npm · Git · [Quick start](#quick-start) · [How it works](#how-it-works) · [Boundaries](#boundaries)
 
 ## See it in action
 
@@ -30,12 +18,15 @@ Node.js 22+ · npm · Git · [Quick start](#quick-start) · [How it works](#how-
 ## Why it exists
 
 ### Start from green
+
 The baseline must pass before the requested package is installed. You supply an exact version and reviewed migration notes.
 
 ### Keep the upgrade intact
+
 The installed version, package manifest and lockfile are checked. The adapter cannot undo the upgrade to make tests pass.
 
 ### Review one migration
+
 The result combines the dependency change, focused source edits and command evidence in a retained worktree.
 
 ## Quick start
@@ -43,7 +34,9 @@ The result combines the dependency change, focused source edits and command evid
 ```sh
 git clone https://github.com/elie-laloum/bumplab.git
 cd bumplab
-npm test
+npm ci
+npm run check
+npm run build
 npm run demo
 ```
 
@@ -61,41 +54,21 @@ Create `workflow.json`, adapt the commands to your project, and use an absolute 
 
 ```json
 {
-  "scope": [
-    "src/"
-  ],
-  "setup": [
-    [
-      "npm",
-      "ci",
-      "--ignore-scripts"
-    ]
-  ],
-  "check": [
-    "npm",
-    "test"
-  ],
-  "update": [
-    "npm",
-    "install",
-    "--save-exact",
-    "--ignore-scripts",
-    "{package}@{version}"
-  ],
+  "scope": ["src/"],
+  "setup": [["npm", "ci", "--ignore-scripts"]],
+  "check": ["npm", "test"],
+  "update": ["npm", "install", "--save-exact", "--ignore-scripts", "{package}@{version}"],
   "verify": [],
   "attempts": 3,
   "timeoutMs": 120000,
-  "agent": [
-    "node",
-    "/absolute/path/to/bumplab/adapters/anthropic.js"
-  ]
+  "agent": ["node", "/absolute/path/to/bumplab/dist/adapters/anthropic.js"]
 }
 ```
 
 ```sh
 export ANTHROPIC_API_KEY="your-key"
 export ANTHROPIC_MODEL="your-enabled-model-id"
-node bin/bumplab.js run --repo /path/to/app --config workflow.json --out /path/to/new-result --package example-package --version 2.0.0 --notes migration.md
+node dist/bin/bumplab.js run --repo /path/to/app --config workflow.json --out /path/to/new-result --package example-package --version 2.0.0 --notes migration.md
 ```
 
 Run from this tool’s checkout. The target must be a clean Git repository; the output must be a new directory outside it. Omit checks your project does not provide. Set up dependencies explicitly. The adapter receives scoped source and failure logs; review that scope before using a hosted model.
@@ -105,10 +78,13 @@ Run from this tool’s checkout. The target must be a clean Git repository; the 
 An adapter is an executable argv array. It reads one JSON request from stdin and returns one JSON object on stdout:
 
 ```json
-{"summary":"Explain the change","edits":[{"path":"src/file.js","content":"Complete replacement file contents"}]}
+{
+  "summary": "Explain the change",
+  "edits": [{ "path": "src/file.js", "content": "Complete replacement file contents" }]
+}
 ```
 
-Requests include `protocolVersion`, `workflow`, `attempt`, scoped `files`, the last `failure`, migration context when present, and `previousAttempts`. No markdown fences. Diagnostics go to stderr. See [the adapter](adapters/anthropic.js) and [the reproducible demo](examples/demo.js).
+Requests include `protocolVersion`, `workflow`, `attempt`, scoped `files`, the last `failure`, migration context when present, and `previousAttempts`. No markdown fences. Diagnostics go to stderr. See [the adapter](adapters/anthropic.ts) and [the reproducible demo](examples/demo.ts).
 
 ### Review the result
 
@@ -124,6 +100,8 @@ Commands and adapters execute with your local permissions; a Git worktree is iso
 v0.1 supports one direct dependency in an npm project with a v2/v3 package-lock. Workspaces and other package managers are not supported. Migration notes are supplied by the developer. The deterministic demo validates the workflow; the included Anthropic adapter has contract tests, not a live-model benchmark.
 
 ## Development
+
+See the [architecture and module boundaries](docs/architecture.md). Node.js 24 LTS is the development baseline; CI also exercises Node.js 26.
 
 Run `npm test` and `npm run demo`. Tests create real Git repositories and validate the exported changes as well as refusal paths.
 

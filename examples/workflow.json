@@ -1,30 +1,10 @@
 {
-  "scope": [
-    "src/"
-  ],
-  "setup": [
-    [
-      "npm",
-      "ci",
-      "--ignore-scripts"
-    ]
-  ],
-  "check": [
-    "npm",
-    "test"
-  ],
-  "update": [
-    "npm",
-    "install",
-    "--save-exact",
-    "--ignore-scripts",
-    "{package}@{version}"
-  ],
+  "scope": ["src/"],
+  "setup": [["npm", "ci", "--ignore-scripts"]],
+  "check": ["npm", "test"],
+  "update": ["npm", "install", "--save-exact", "--ignore-scripts", "{package}@{version}"],
   "verify": [],
   "attempts": 3,
   "timeoutMs": 120000,
-  "agent": [
-    "node",
-    "/absolute/path/to/bumplab/adapters/anthropic.js"
-  ]
+  "agent": ["node", "/absolute/path/to/bumplab/dist/adapters/anthropic.js"]
 }
