@@ -1,6 +1,20 @@
 <p align="right"><a href="README.md">English</a></p>
 <img src="assets/cover.svg" alt="BumpLab" width="100%">
 
+<!-- project badges -->
+<p>
+<a href="README.md"><img src="https://img.shields.io/badge/version-0.1.0-24334b?style=flat-square" alt="Version 0.1.0"></a>
+<a href="https://github.com/elie-laloum/bumplab/actions/workflows/ci.yml"><img src="https://github.com/elie-laloum/bumplab/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-e6b3ff?style=flat-square&amp;labelColor=172033" alt="MIT"></a>
+<a href="README.md#see-it-in-action"><img src="https://img.shields.io/badge/demo-watch-e6b3ff?style=flat-square&amp;labelColor=172033" alt="Watch the demo"></a>
+</p>
+<p>
+<a href="README.md#quick-start"><img src="https://img.shields.io/badge/-TypeScript-e6b3ff?style=flat-square&amp;labelColor=172033&amp;logo=typescript&amp;logoColor=white" alt="TypeScript"></a>
+<a href="README.md#quick-start"><img src="https://img.shields.io/badge/-Node.js%2022%2B-e6b3ff?style=flat-square&amp;labelColor=172033&amp;logo=nodedotjs&amp;logoColor=white" alt="Node.js 22+"></a>
+<a href="README.md#quick-start"><img src="https://img.shields.io/badge/-npm-e6b3ff?style=flat-square&amp;labelColor=172033&amp;logo=npm&amp;logoColor=white" alt="npm"></a>
+</p>
+<!-- /project badges -->
+
 # BumpLab
 
 **Mettez à jour une dépendance npm vers une version précise, adaptez le code concerné et examinez la migration sous forme de patch testé.**
