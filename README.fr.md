@@ -1,5 +1,5 @@
 <p align="right"><a href="README.md">English</a></p>
-<img src="assets/cover-v4.png" alt="BumpLab" width="100%">
+<img src="assets/cover-v5.png" alt="BumpLab" width="100%">
 
 [![CI](https://img.shields.io/github/actions/workflow/status/elie-laloum/bumplab/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/elie-laloum/bumplab/actions/workflows/ci.yml) [![License](https://img.shields.io/badge/license-MIT-586475?style=flat-square)](LICENSE)
 
